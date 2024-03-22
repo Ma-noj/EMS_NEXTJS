@@ -3,7 +3,15 @@ import connect from "../../../../lib/db"
 import User from "../../../../lib/modals/user";
 import { request } from "http";
 import { Types } from "mongoose";
-
+/**
+ * @swagger
+ * /api/users:
+ *   get:
+ *     description: Returns the List of users
+ *     responses:
+ *       200:
+ *         description: {_id: string}
+ */
 export const GET = async () => {
     try {
         await connect();
@@ -29,7 +37,7 @@ export const POST = async (request: Request) => {
         if (!saveUser) {
             return new NextResponse(JSON.stringify({ message: "User Not Saved" }), { status: 400 });
         }
-        return new NextResponse(JSON.stringify({ message: "Saved", data: saveUser }), { status: 201 });
+        return NextResponse.json({ message: "Saved", data: saveUser }, { status: 201 });
     } catch (error) {
         return new NextResponse(JSON.stringify({ error: error }), { status: 500 });
 
@@ -40,7 +48,6 @@ export const PATCH = async (request: Request) => {
     try {
         const body = await request.json();
         const { userEmail, userPassword } = body;
-        await connect();
         //verifying that the userEmail and userPassword are not empty
         if (!userEmail || !userPassword) {
             return new NextResponse(JSON.stringify({ message: "Missing userEmail Or Password" }), {
